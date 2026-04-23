@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  --accent: #0066ff;
+  --accent-hover: #0052cc;
+  --accent-subtle: rgba(0, 102, 255, 0.08);
+}
+
+[data-theme="dark"] {
+  --bg: #0d0d0d;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1c1c1c;
+  --border: #222222;
+  --border-subtle: #1a1a1a;
+  --text-primary: #f2f2f2;
+  --text-secondary: #777777;
+  --text-muted: #444444;
+  --card-bg: #111111;
+}
+
+[data-theme="light"] {
+  --bg: #fafafa;
+  --bg-secondary: #f3f3f3;
+  --bg-tertiary: #ebebeb;
+  --border: #e4e4e4;
+  --border-subtle: #efefef;
+  --text-primary: #0d0d0d;
+  --text-secondary: #666666;
+  --text-muted: #aaaaaa;
+  --card-bg: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:
+    "Geist",
+    -apple-system,
+    sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Geist", sans-serif;
+}
+
+code,
+.mono {
+  font-family: "Geist Mono", monospace;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  .show-mobile {
+    display: flex !important;
+  }
+}
