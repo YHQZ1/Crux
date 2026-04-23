@@ -8,23 +8,20 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const root = document.documentElement;
-    // Disable all transitions instantly
+
+    root.classList.add("disable-transitions");
     root.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+
+    const timer = setTimeout(() => {
+      root.classList.remove("disable-transitions");
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [theme]);
 
   const toggleTheme = () => {
-    // Kill transitions before toggle
-    document.documentElement.style.setProperty("transition", "none");
-    document.documentElement.querySelectorAll("*").forEach((el) => {
-      (el as HTMLElement).style &&
-        ((el as HTMLElement).style.transition = "none");
-    });
-    setTheme((t) => (t === "dark" ? "light" : "dark"));
-    // Re-enable after paint
-    requestAnimationFrame(() => {
-      document.documentElement.style.removeProperty("transition");
-    });
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
   return (

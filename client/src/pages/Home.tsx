@@ -1,700 +1,448 @@
 import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  TrendingUp,
-  Shield,
-  Zap,
-  BarChart3,
-  Package,
-  Leaf,
-  ChevronRight,
-} from "lucide-react";
+import { useEffect, useRef } from "react";
 
-const stats = [
-  { value: "200+", label: "Projects Delivered" },
-  { value: "40%", label: "Avg. Cost Reduction" },
-  { value: "15+", label: "Industries Served" },
-  { value: "98%", label: "Client Retention" },
-];
+function useReveal<T extends HTMLElement = HTMLElement>() {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("is-visible");
+          obs.unobserve(el);
+        }
+      },
+      { threshold: 0.05, rootMargin: "0px 0px -30px 0px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+}
 
-const services = [
-  {
-    icon: Package,
-    id: "01",
-    title: "Supply Chain Management",
-    desc: "End-to-end visibility and optimization across your entire supply network.",
-  },
-  {
-    icon: Shield,
-    id: "02",
-    title: "Vendor Development",
-    desc: "Build resilient supplier ecosystems that scale with your business.",
-  },
-  {
-    icon: Zap,
-    id: "03",
-    title: "Six Sigma & Process Excellence",
-    desc: "Eliminate waste and drive measurable quality improvements.",
-  },
-  {
-    icon: Leaf,
-    id: "04",
-    title: "ESG Advisory",
-    desc: "Embed sustainability into operations for long-term commercial value.",
-  },
-  {
-    icon: TrendingUp,
-    id: "05",
-    title: "Procurement Strategy",
-    desc: "Smarter purchasing decisions backed by data and industry insight.",
-  },
-  {
-    icon: BarChart3,
-    id: "06",
-    title: "Logistics & Distribution",
-    desc: "Optimize last-mile and network-wide delivery performance.",
-  },
-];
+function HexVisual() {
+  const NODES = [
+    { label: "Vendor", cx: 160, cy: 20 },
+    { label: "Six Sigma", cx: 281.24, cy: 90 },
+    { label: "JIT", cx: 281.24, cy: 230 },
+    { label: "ESG", cx: 160, cy: 300 },
+    { label: "Audit", cx: 38.76, cy: 230 },
+    { label: "Risk", cx: 38.76, cy: 90 },
+  ];
 
-const clients = ["Tata Group", "Mahindra", "Reliance", "Wipro", "HUL", "ITC"];
+  const polygonPoints = NODES.map((n) => `${n.cx},${n.cy}`).join(" ");
 
-const caseStudies = [
-  {
-    tag: "Supply Chain",
-    title: "How we cut Mahindra's procurement cost by 31%",
-    time: "6 month engagement",
-  },
-  {
-    tag: "Six Sigma",
-    title: "Reducing defect rate from 4.2% to 0.3% for a Pune manufacturer",
-    time: "4 month engagement",
-  },
-  {
-    tag: "ESG",
-    title: "Building a carbon-neutral logistics framework for an FMCG giant",
-    time: "8 month engagement",
-  },
-];
-
-export default function Home() {
   return (
-    <main style={{ width: "100%" }}>
-      {/* Hero — asymmetric split */}
-      <section
-        style={{
-          width: "100%",
-          minHeight: "100vh",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          borderBottom: "1px solid var(--border)",
-          paddingTop: "56px",
-        }}
-      >
-        {/* Left */}
-        <div
-          style={{
-            padding: "80px 48px 80px 32px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            borderRight: "1px solid var(--border)",
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              backgroundColor: "var(--accent-subtle)",
-              border: "1px solid var(--accent)",
-              borderRadius: "4px",
-              padding: "4px 10px",
-              marginBottom: "36px",
-              width: "fit-content",
-            }}
-          >
-            <span
-              style={{
-                width: "5px",
-                height: "5px",
-                borderRadius: "50%",
-                backgroundColor: "var(--accent)",
-                display: "inline-block",
-              }}
+    <svg
+      viewBox="0 0 320 320"
+      className="w-[85%] max-w-[360px] relative z-10 overflow-visible"
+    >
+      <circle
+        cx="160"
+        cy="160"
+        r="140"
+        fill="none"
+        stroke="var(--border-color)"
+        strokeWidth="1"
+        opacity="0.4"
+      />
+      <g className="animate-[spin_40s_linear_infinite] origin-center">
+        {NODES.map((n, i) => (
+          <line
+            key={`spoke-${i}`}
+            x1="160"
+            y1="160"
+            x2={n.cx}
+            y2={n.cy}
+            stroke="var(--border-color)"
+            strokeWidth="1.5"
+          />
+        ))}
+        <polygon
+          points={polygonPoints}
+          fill="none"
+          stroke="var(--border-color)"
+          strokeWidth="1.5"
+          opacity="0.4"
+        />
+        <polygon
+          points={polygonPoints}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth="3"
+          className="animate-trace"
+        />
+        {NODES.map((n, i) => (
+          <g key={`node-${i}`}>
+            <circle
+              cx={n.cx}
+              cy={n.cy}
+              r="26"
+              fill="var(--bg-base)"
+              stroke="var(--border-color)"
+              strokeWidth="1.5"
             />
-            <span
+            <text
+              x={n.cx}
+              y={n.cy + 3}
+              textAnchor="middle"
+              fontSize="8"
+              fontWeight="700"
+              letterSpacing="0.08em"
+              fill="var(--text-base)"
+              className="animate-[spin_40s_linear_infinite_reverse]"
               style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "var(--accent)",
-                letterSpacing: "0.8px",
                 textTransform: "uppercase",
-                fontFamily: "Geist Mono, monospace",
+                transformOrigin: `${n.cx}px ${n.cy}px`,
               }}
             >
-              Operations Consulting
+              {n.label}
+            </text>
+          </g>
+        ))}
+        <circle cx="160" cy="160" r="8" fill="var(--accent)" />
+      </g>
+    </svg>
+  );
+}
+
+const CASES = [
+  {
+    id: "001",
+    sector: "FinTech",
+    headline:
+      "Financial ledger restructuring and multi-tenant database migration.",
+    result: "Zero-Downtime scaling",
+    year: "2026",
+  },
+  {
+    id: "002",
+    sector: "DevOps",
+    headline: "Infrastructure automation and AWS ECS deployment scaling.",
+    result: "—40% server costs",
+    year: "2026",
+  },
+  {
+    id: "003",
+    sector: "AI / HR Tech",
+    headline: "LLM-integrated resume screening and skills mapping algorithm.",
+    result: "98% matching accuracy",
+    year: "2026",
+  },
+];
+
+const LOGOS = [
+  "zomato",
+  "swiggy",
+  "paytm",
+  "razorpay",
+  "postman",
+  "zoho",
+  "tata",
+  "jio",
+  "infosys",
+  "hasura",
+  "polygon",
+  "airtel",
+  "oyo",
+];
+const MARQUEE = [...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS];
+
+export const Home = () => {
+  const metricsRef = useReveal<HTMLDivElement>();
+  const philosophyRef = useReveal<HTMLDivElement>();
+  const capabilitiesRef = useReveal<HTMLDivElement>();
+  const casesRef = useReveal<HTMLDivElement>();
+
+  return (
+    <main className="w-full flex flex-col pt-0">
+      {/* 1. HERO */}
+      <section
+        className="w-full min-h-[85vh] grid grid-cols-1 lg:grid-cols-2 relative border-b"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div className="flex flex-col justify-center px-6 md:px-16 py-16 relative z-10">
+          <div
+            className="flex items-center gap-3 mb-10 hero-fade opacity-0"
+            style={{ animationDelay: "0.1s" }}
+          >
+            <div
+              className="w-2 h-2"
+              style={{ backgroundColor: "var(--accent)" }}
+            />
+            <span className="text-sm font-bold uppercase tracking-widest opacity-60">
+              Accepting New Engagements — Q3 2026
             </span>
           </div>
-
           <h1
+            className="tracking-tighter leading-[0.85] uppercase mb-10 hero-fade opacity-0"
             style={{
-              fontSize: "clamp(40px, 5vw, 68px)",
-              fontWeight: 800,
-              lineHeight: 1.05,
-              letterSpacing: "-2px",
-              color: "var(--text-primary)",
-              marginBottom: "24px",
+              fontSize: "clamp(3.5rem, 8vw, 7rem)",
+              color: "var(--text-base)",
+              animationDelay: "0.2s",
             }}
           >
-            Operational
+            Operations.
             <br />
-            excellence,
-            <br />
-            <span
-              style={{
-                color: "var(--accent)",
-                fontStyle: "italic",
-                fontWeight: 700,
-              }}
-            >
-              precisely
-            </span>{" "}
-            delivered.
+            <span style={{ color: "var(--accent)" }}>Refined.</span>
           </h1>
-
           <p
-            style={{
-              fontSize: "15px",
-              color: "var(--text-secondary)",
-              lineHeight: 1.75,
-              maxWidth: "440px",
-              marginBottom: "40px",
-              fontWeight: 400,
-            }}
+            className="text-2xl md:text-3xl max-w-2xl font-light leading-snug tracking-tight mb-12 hero-fade opacity-0 opacity-70"
+            style={{ animationDelay: "0.3s" }}
           >
-            Crux partners with manufacturers, FMCG companies, and
-            supply-chain-heavy enterprises to cut waste, accelerate procurement,
-            and build resilient operations.
+            We engineer resilient supply chains and exact operational precision.{" "}
+            <span
+              className="font-medium opacity-100"
+              style={{ color: "var(--text-base)" }}
+            >
+              No fluff. Just yield.
+            </span>
           </p>
-
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div
+            className="flex items-center gap-10 hero-fade opacity-0"
+            style={{ animationDelay: "0.5s" }}
+          >
             <Link
-              to="/contact"
-              style={{
-                textDecoration: "none",
-                backgroundColor: "var(--accent)",
-                color: "#fff",
-                padding: "10px 24px",
-                borderRadius: "6px",
-                fontWeight: 600,
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
+              to="/esg-calculator"
+              className="group inline-flex items-center gap-4 text-base font-bold uppercase tracking-widest w-fit"
             >
-              Book a Consultation <ArrowRight size={14} strokeWidth={2.5} />
-            </Link>
-            <Link
-              to="/case-studies"
-              style={{
-                textDecoration: "none",
-                border: "1px solid var(--border)",
-                color: "var(--text-primary)",
-                padding: "10px 24px",
-                borderRadius: "6px",
-                fontWeight: 500,
-                fontSize: "14px",
-              }}
-            >
-              Case Studies
+              <span className="pb-1 border-b-2 border-transparent group-hover:border-[color:var(--accent)] transition-colors">
+                Run ESG Diagnostic
+              </span>
+              <span className="w-8 h-px bg-current group-hover:w-12 group-hover:bg-[color:var(--accent)] transition-all duration-300" />
             </Link>
           </div>
         </div>
-
-        {/* Right — stats panel */}
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gridTemplateRows: "1fr 1fr",
-          }}
+          className="hidden lg:flex items-center justify-center relative overflow-hidden py-16 border-l"
+          style={{ borderColor: "var(--border-color)" }}
         >
-          {stats.map((stat, i) => (
-            <div
-              key={i}
-              style={{
-                padding: "48px 40px",
-                borderRight: i % 2 === 0 ? "1px solid var(--border)" : "none",
-                borderBottom: i < 2 ? "1px solid var(--border)" : "none",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-end",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "48px",
-                  fontWeight: 800,
-                  color: "var(--text-primary)",
-                  letterSpacing: "-2px",
-                  lineHeight: 1,
-                  marginBottom: "8px",
-                  fontFamily: "Geist Mono, monospace",
-                }}
-              >
-                {stat.value}
-              </p>
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "var(--text-muted)",
-                  fontWeight: 500,
-                  letterSpacing: "0.3px",
-                }}
-              >
-                {stat.label}
-              </p>
-            </div>
-          ))}
+          <HexVisual />
         </div>
       </section>
 
-      {/* Clients strip */}
+      {/* 2. MARQUEE */}
       <div
-        style={{
-          width: "100%",
-          padding: "20px 32px",
-          borderBottom: "1px solid var(--border)",
-          display: "flex",
-          alignItems: "center",
-          gap: "32px",
-          overflow: "hidden",
-        }}
+        className="w-full overflow-hidden py-12 border-b"
+        style={{ borderColor: "var(--border-color)" }}
       >
-        <span
-          style={{
-            fontSize: "11px",
-            fontWeight: 600,
-            color: "var(--text-muted)",
-            letterSpacing: "1px",
-            textTransform: "uppercase",
-            whiteSpace: "nowrap",
-            fontFamily: "Geist Mono, monospace",
-          }}
-        >
-          Trusted by
-        </span>
-        <div
-          style={{
-            width: "1px",
-            height: "20px",
-            backgroundColor: "var(--border)",
-            flexShrink: 0,
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            gap: "40px",
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}
-        >
-          {clients.map((c, i) => (
-            <span
+        <div className="marquee-track flex gap-24 items-center">
+          {MARQUEE.map((logo, i) => (
+            <img
               key={i}
-              style={{
-                fontSize: "13px",
-                fontWeight: 600,
-                color: "var(--text-muted)",
-                letterSpacing: "-0.2px",
-              }}
-            >
-              {c}
-            </span>
+              src={`https://cdn.simpleicons.org/${logo}/a1a1aa`}
+              alt={logo}
+              className="h-10 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-pointer"
+            />
           ))}
         </div>
       </div>
 
-      {/* Services grid */}
-      <section
-        style={{
-          width: "100%",
-          padding: "80px 32px",
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: "48px",
-          }}
-        >
-          <div>
-            <p
-              style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "var(--accent)",
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-                fontFamily: "Geist Mono, monospace",
-                marginBottom: "12px",
-              }}
+      {/* 3. METRICS */}
+      <section ref={metricsRef} className="w-full py-20 reveal-section">
+        <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-12 px-6 md:px-16">
+          {[
+            { metric: "₹1,000Cr+", label: "Capital Freed" },
+            { metric: "140+", label: "Audits Executed" },
+            { metric: "35%", label: "Cycle Reduction" },
+            { metric: "100%", label: "Compliance Rate" },
+          ].map((stat, i) => (
+            <div
+              key={i}
+              className="flex flex-col items-center md:items-start gap-4 reveal-child"
+              style={{ transitionDelay: `${i * 0.08}s` }}
             >
-              What We Do
-            </p>
-            <h2
-              style={{
-                fontSize: "clamp(28px, 3vw, 44px)",
-                fontWeight: 800,
-                letterSpacing: "-1.5px",
-                color: "var(--text-primary)",
-                lineHeight: 1.1,
-              }}
-            >
-              Six practices.
-              <br />
-              One outcome.
-            </h2>
-          </div>
-          <Link
-            to="/services"
-            style={{
-              textDecoration: "none",
-              fontSize: "13px",
-              fontWeight: 500,
-              color: "var(--text-secondary)",
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              border: "1px solid var(--border)",
-              padding: "7px 14px",
-              borderRadius: "6px",
-              marginTop: "8px",
-            }}
-          >
-            All Services <ChevronRight size={13} />
-          </Link>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            border: "1px solid var(--border)",
-            borderRadius: "8px",
-            overflow: "hidden",
-          }}
-        >
-          {services.map((s, i) => {
-            const Icon = s.icon;
-            const isLastRow = i >= 3;
-            const isLastCol = (i + 1) % 3 === 0;
-            return (
-              <div
-                key={s.id}
-                style={{
-                  padding: "32px",
-                  backgroundColor: "var(--card-bg)",
-                  borderRight: !isLastCol ? "1px solid var(--border)" : "none",
-                  borderBottom: !isLastRow ? "1px solid var(--border)" : "none",
-                  cursor: "default",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor =
-                    "var(--bg-secondary)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "var(--card-bg)")
-                }
+              <span
+                className="text-xs font-bold uppercase tracking-widest"
+                style={{ color: "var(--accent)" }}
               >
-                <div
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    backgroundColor: "var(--accent-subtle)",
-                    borderRadius: "8px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <Icon size={16} color="var(--accent)" strokeWidth={2} />
-                </div>
-                <p
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    color: "var(--text-muted)",
-                    fontFamily: "Geist Mono, monospace",
-                    marginBottom: "10px",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  {s.id}
-                </p>
-                <h3
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: 700,
-                    color: "var(--text-primary)",
-                    marginBottom: "8px",
-                    letterSpacing: "-0.3px",
-                  }}
-                >
-                  {s.title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: "13px",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.65,
-                  }}
-                >
-                  {s.desc}
-                </p>
-              </div>
-            );
-          })}
+                {stat.label}
+              </span>
+              <span
+                className="font-light tracking-tighter"
+                style={{ fontSize: "clamp(2.5rem, 4.5vw, 4.5rem)" }}
+              >
+                {stat.metric}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Case Studies preview */}
+      {/* 4. PHILOSOPHY */}
       <section
-        style={{
-          width: "100%",
-          padding: "80px 32px",
-          borderBottom: "1px solid var(--border)",
-        }}
+        ref={philosophyRef}
+        className="w-full pt-10 py-24 reveal-section border-t bg-[color:var(--bg-surface)]"
+        style={{ borderColor: "var(--border-color)" }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: "40px",
-          }}
-        >
-          <div>
-            <p
-              style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "var(--accent)",
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-                fontFamily: "Geist Mono, monospace",
-                marginBottom: "12px",
-              }}
-            >
-              Case Studies
-            </p>
-            <h2
-              style={{
-                fontSize: "clamp(28px, 3vw, 44px)",
-                fontWeight: 800,
-                letterSpacing: "-1.5px",
-                color: "var(--text-primary)",
-                lineHeight: 1.1,
-              }}
-            >
-              Results that speak.
-            </h2>
-          </div>
-          <Link
-            to="/case-studies"
-            style={{
-              textDecoration: "none",
-              fontSize: "13px",
-              fontWeight: 500,
-              color: "var(--text-secondary)",
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              border: "1px solid var(--border)",
-              padding: "7px 14px",
-              borderRadius: "6px",
-              marginTop: "8px",
-            }}
+        <div className="px-6 md:px-16 mb-24 reveal-child text-center flex flex-col items-center">
+          <span
+            className="text-sm font-bold uppercase tracking-[0.3em] mb-8"
+            style={{ color: "var(--accent)" }}
           >
-            View All <ChevronRight size={13} />
-          </Link>
+            Our Thesis
+          </span>
+          <blockquote className="text-3xl md:text-6xl font-light leading-tight max-w-5xl tracking-tight">
+            "Strategy is a commodity. Execution is an art. We do not sell slide
+            decks — we{" "}
+            <span className="text-[color:var(--accent)]">
+              rewire factory floors.
+            </span>
+            "
+          </blockquote>
         </div>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            border: "1px solid var(--border)",
-            borderRadius: "8px",
-            overflow: "hidden",
-          }}
-        >
-          {caseStudies.map((c, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-6 md:px-16">
+          {["Diagnose", "Dismantle", "Deploy"].map((title, i) => (
             <div
               key={i}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "28px 32px",
-                borderBottom:
-                  i < caseStudies.length - 1
-                    ? "1px solid var(--border)"
-                    : "none",
-                backgroundColor: "var(--card-bg)",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--bg-secondary)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--card-bg)")
-              }
+              className="flex flex-col gap-5 reveal-child"
+              style={{ transitionDelay: `${0.15 + i * 0.1}s` }}
             >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "24px" }}
-              >
+              <div className="flex items-center gap-4">
                 <span
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    color: "var(--accent)",
-                    backgroundColor: "var(--accent-subtle)",
-                    padding: "3px 8px",
-                    borderRadius: "4px",
-                    whiteSpace: "nowrap",
-                    fontFamily: "Geist Mono, monospace",
-                  }}
+                  className="font-mono text-base"
+                  style={{ color: "var(--accent)" }}
                 >
-                  {c.tag}
+                  [{i + 1}]
                 </span>
-                <span
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: 600,
-                    color: "var(--text-primary)",
-                    letterSpacing: "-0.2px",
-                  }}
-                >
-                  {c.title}
+                <span className="text-xs font-bold uppercase tracking-widest opacity-60">
+                  {title}
                 </span>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
-                  flexShrink: 0,
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "12px",
-                    color: "var(--text-muted)",
-                    fontFamily: "Geist Mono, monospace",
-                  }}
+              <p className="text-lg font-light leading-relaxed opacity-70">
+                {i === 0 &&
+                  "We embed within operations for 2–4 weeks before writing a single recommendation. Every hypothesis is stress-tested against actual data."}
+                {i === 1 &&
+                  "Legacy processes, bloated vendor lists, misaligned KPIs — we remove what doesn't earn its place. Even when uncomfortable."}
+                {i === 2 &&
+                  "We stay on-site until the change holds under real operating pressure. Implementations are managed to a strict milestone schedule."}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. CAPABILITIES */}
+      <section
+        ref={capabilitiesRef}
+        className="w-full px-6 md:px-16 py-24 reveal-section border-t"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div className="w-full flex flex-col lg:flex-row justify-between items-start mb-20 gap-12">
+          <h2 className="text-xs font-bold uppercase tracking-[0.2em] opacity-40 lg:w-1/4 reveal-child">
+            Core Capabilities
+          </h2>
+          <p className="text-4xl md:text-5xl max-w-4xl font-light leading-tight tracking-tight lg:w-3/4 reveal-child">
+            We audit, dismantle, and rebuild operational workflows with
+            mathematical certainty.
+          </p>
+        </div>
+        <div
+          className="w-full flex flex-col border-t"
+          style={{ borderColor: "var(--border-color)" }}
+        >
+          {[
+            {
+              id: "01",
+              title: "Vendor Architecture",
+              desc: "Consolidate supplier networks to leverage volume pricing while ensuring geopolitical redundancies.",
+            },
+            {
+              id: "02",
+              title: "Six Sigma Integration",
+              desc: "Deploying DMAIC methodologies across assembly lines to ruthlessly hunt and eradicate variance.",
+            },
+            {
+              id: "03",
+              title: "ESG Data & Compliance",
+              desc: "Transform vague goals into auditable metrics for enterprise compliance and institutional capital.",
+            },
+            {
+              id: "04",
+              title: "JIT Inventory Systems",
+              desc: "Establish precision lead-time mapping to establish JIT flows that free massive working capital.",
+            },
+          ].map((s, i) => (
+            <div
+              key={s.id}
+              className="flex flex-col md:flex-row items-start py-12 border-b hover:bg-[color:var(--bg-surface)] transition-all reveal-child px-4"
+              style={{
+                borderColor: "var(--border-color)",
+                transitionDelay: `${i * 0.07}s`,
+              }}
+            >
+              <span className="text-2xl font-mono w-24 mb-4 md:mb-0 opacity-20">
+                [{s.id}]
+              </span>
+              <div className="w-full md:w-1/2 pr-8 mb-4 md:mb-0">
+                <h3
+                  className="font-light tracking-tight group-hover:text-[color:var(--accent)] transition-colors"
+                  style={{ fontSize: "clamp(2rem, 3.5vw, 3.5rem)" }}
                 >
-                  {c.time}
-                </span>
-                <ArrowRight size={14} color="var(--text-muted)" />
+                  {s.title}
+                </h3>
+              </div>
+              <div className="w-full md:w-1/3 ml-auto">
+                <p className="text-lg font-light leading-relaxed opacity-60">
+                  {s.desc}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA */}
+      {/* 6. SELECTED WORK */}
       <section
-        style={{
-          width: "100%",
-          padding: "100px 32px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          alignItems: "center",
-          gap: "48px",
-          borderBottom: "1px solid var(--border)",
-        }}
+        ref={casesRef}
+        className="w-full px-6 md:px-16 py-24 reveal-section border-t"
+        style={{ borderColor: "var(--border-color)" }}
       >
-        <div>
-          <p
-            style={{
-              fontSize: "11px",
-              fontWeight: 600,
-              color: "var(--accent)",
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              fontFamily: "Geist Mono, monospace",
-              marginBottom: "16px",
-            }}
-          >
-            Get Started
+        <div className="mb-16 reveal-child">
+          <span className="text-xs font-bold uppercase tracking-widest opacity-40 mb-6 block">
+            Case Studies
+          </span>
+          <p className="text-4xl md:text-5xl font-light tracking-tight">
+            Outcomes, not effort.
           </p>
-          <h2
-            style={{
-              fontSize: "clamp(32px, 4vw, 56px)",
-              fontWeight: 800,
-              letterSpacing: "-2px",
-              color: "var(--text-primary)",
-              lineHeight: 1.05,
-            }}
-          >
-            Let's fix your
-            <br />
-            operations.
-          </h2>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <p
-            style={{
-              fontSize: "15px",
-              color: "var(--text-secondary)",
-              lineHeight: 1.75,
-            }}
-          >
-            Tell us where you're losing time, money, or efficiency. We'll scope
-            a solution and get back within 24 hours.
-          </p>
-          <div style={{ display: "flex", gap: "10px" }}>
-            <Link
-              to="/contact"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {CASES.map((c, i) => (
+            <div
+              key={c.id}
+              className="p-10 border bg-[color:var(--bg-surface)] hover:border-[color:var(--accent)] transition-all reveal-child flex flex-col justify-between min-h-[340px]"
               style={{
-                textDecoration: "none",
-                backgroundColor: "var(--accent)",
-                color: "#fff",
-                padding: "10px 24px",
-                borderRadius: "6px",
-                fontWeight: 600,
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
+                borderColor: "var(--border-color)",
+                transitionDelay: `${i * 0.08}s`,
               }}
             >
-              Start the Conversation <ArrowRight size={14} strokeWidth={2.5} />
-            </Link>
-            <Link
-              to="/services"
-              style={{
-                textDecoration: "none",
-                border: "1px solid var(--border)",
-                color: "var(--text-primary)",
-                padding: "10px 24px",
-                borderRadius: "6px",
-                fontWeight: 500,
-                fontSize: "14px",
-              }}
-            >
-              Our Services
-            </Link>
-          </div>
+              <div>
+                <div className="flex items-center justify-between mb-10">
+                  <span className="text-xs font-bold uppercase tracking-widest text-[color:var(--accent)]">
+                    {c.sector}
+                  </span>
+                  <span className="text-xs font-mono opacity-40">{c.year}</span>
+                </div>
+                <p className="text-2xl md:text-3xl font-light leading-snug tracking-tight mb-8">
+                  {c.headline}
+                </p>
+              </div>
+              <div
+                className="flex items-end justify-between pt-6 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <span className="text-xl font-bold tracking-tight">
+                  {c.result}
+                </span>
+                <span className="text-[10px] font-mono opacity-20 uppercase">
+                  SECURE_REF_{c.id}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </main>
   );
-}
+};

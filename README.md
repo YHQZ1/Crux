@@ -199,12 +199,12 @@ VITE_API_URL=http://localhost:3000
 
 ## Team
 
-| Name     | PRN |
-| -------- | --- |
-| Member 1 | —   |
-| Member 2 | —   |
-| Member 3 | —   |
-| Member 4 | —   |
+| Name             |
+| ---------------- |
+| Jeel Patel       |
+| Kisna Kanti      |
+| Rut Vaghani      |
+| Uttkarsh Ruparel |
 
 **Problem Statement Chosen:** Consultancy Startup — Website (Option 3)
 

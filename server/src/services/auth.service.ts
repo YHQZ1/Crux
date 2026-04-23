@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { supabase } from "../config/supabase.js";
 
 export const registerUser = async (
+  name: string,
   email: string,
   password: string,
   role = "client",
@@ -11,13 +12,13 @@ export const registerUser = async (
 
   const { data, error } = await supabase
     .from("users")
-    .insert([{ email, password: hashedPassword, role }])
+    .insert([{ name, email, password: hashedPassword, role }])
     .select()
     .single();
 
   if (error) throw new Error(error.message);
 
-  return { id: data.id, email: data.email, role: data.role };
+  return { id: data.id, name: data.name, email: data.email, role: data.role };
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -38,5 +39,8 @@ export const loginUser = async (email: string, password: string) => {
     { expiresIn: "7d" },
   );
 
-  return { token, user: { id: user.id, email: user.email, role: user.role } };
+  return {
+    token,
+    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+  };
 };

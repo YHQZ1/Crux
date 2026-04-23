@@ -1,87 +1,143 @@
 @import "tailwindcss";
 
 :root {
-  --accent: #0066ff;
-  --accent-hover: #0052cc;
-  --accent-subtle: rgba(0, 102, 255, 0.08);
+  /* High-Contrast Light (Consultancy White) */
+  --bg-base: #ffffff;
+  --bg-surface: #fafafa;
+  --text-base: #0a0a0a;
+  --text-muted: #4a4a4a;
+  --border-color: rgba(0, 0, 0, 0.07);
+  --accent: #ff3e00;
+  --bg-base-rgb: 255, 255, 255;
+  --selection-bg: #000000;
 }
 
-[data-theme="dark"] {
-  --bg: #0d0d0d;
-  --bg-secondary: #141414;
-  --bg-tertiary: #1c1c1c;
-  --border: #222222;
-  --border-subtle: #1a1a1a;
-  --text-primary: #f2f2f2;
-  --text-secondary: #777777;
-  --text-muted: #444444;
-  --card-bg: #111111;
-}
-
-[data-theme="light"] {
-  --bg: #fafafa;
-  --bg-secondary: #f3f3f3;
-  --bg-tertiary: #ebebeb;
-  --border: #e4e4e4;
-  --border-subtle: #efefef;
-  --text-primary: #0d0d0d;
-  --text-secondary: #666666;
-  --text-muted: #aaaaaa;
-  --card-bg: #ffffff;
+:root[data-theme="dark"] {
+  /* Deep Slate Dark (Operations Black) */
+  --bg-base: #050505;
+  --bg-surface: #0a0a0a;
+  --text-base: #f7f7f7;
+  --text-muted: #888888;
+  --border-color: rgba(255, 255, 255, 0.06);
+  --accent: #ff5500;
+  --bg-base-rgb: 5, 5, 5;
+  --selection-bg: var(--accent);
 }
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
-html {
-  scroll-behavior: smooth;
+
+#root {
+  width: 100%;
 }
 
 body {
-  font-family:
-    "Geist",
-    -apple-system,
-    sans-serif;
-  background-color: var(--bg);
-  color: var(--text-primary);
+  background-color: var(--bg-base);
+  color: var(--text-base);
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 100%; /* Reset to standard for better scaling */
+  line-height: 1.5;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Geist", sans-serif;
-}
-
-code,
-.mono {
-  font-family: "Geist Mono", monospace;
-}
-
+/* Elite Selection Style */
 ::selection {
-  background: var(--accent);
-  color: #fff;
+  background-color: var(--selection-bg);
+  color: #ffffff;
 }
 
-::-webkit-scrollbar {
-  width: 3px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border);
+/* Optimized Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+  /* Prevents "White Flash" during JS hydration */
+  background-color: var(--bg-base);
 }
 
-@media (max-width: 768px) {
-  .hide-mobile {
-    display: none !important;
+/* Kinetic Reveal Animations */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
   }
-  .show-mobile {
-    display: flex !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-fade {
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+/* Scroll Reveal Core */
+.reveal-section {
+  content-visibility: auto; /* Performance boost for off-screen sections */
+}
+
+.reveal-section .reveal-child {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: transform, opacity;
+  transition:
+    opacity 1s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.reveal-section.is-visible .reveal-child {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Industrial Marquee */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+  width: max-content;
+}
+
+/* Technical Trace Effect */
+@keyframes trace {
+  to {
+    stroke-dashoffset: -840;
+  }
+}
+
+.animate-trace {
+  stroke-dasharray: 140 700;
+  stroke-dashoffset: 0;
+  animation: trace 8s linear infinite;
+}
+
+.disable-transitions * {
+  transition: none !important;
+}
+
+/* Custom Scrollbar for Desktop */
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-base);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
   }
 }

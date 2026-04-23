@@ -1,5 +1,6 @@
 export interface User {
   id: string;
+  name: string;
   email: string;
   password: string;
   role: "admin" | "client";
@@ -7,14 +8,19 @@ export interface User {
 }
 
 export interface ContactForm {
+  id: string;
   name: string;
   email: string;
   company: string;
   service: string;
   message: string;
+  created_at: string;
 }
 
 export interface ESGInput {
+  id: string;
+  user_id: string;
+  created_at: string;
   energy_consumption: number;
   waste_generated: number;
   employee_count: number;
