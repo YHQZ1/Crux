@@ -184,7 +184,7 @@ export const Auth = () => {
               >
                 {loading ? "Verifying..." : isLogin ? "Sign In" : "Register"}
               </button>
-
+{/* 
               <button
                 type="button"
                 className="w-full py-4 border text-[10px] font-bold uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-[color:var(--bg-surface)] transition-all cursor-pointer"
@@ -209,7 +209,7 @@ export const Auth = () => {
                   />
                 </svg>
                 Google
-              </button>
+              </button> */}
             </div>
           </form>
 
